@@ -2,6 +2,7 @@ let x = 0;
 let y = 0;
 let vx = 0;
 let vy = 0;
+
 let diam = 10;
 
 function setup() {
@@ -16,14 +17,24 @@ function draw() {
   background(255);
   fill(0);
 
-  circle(x, y, diam);
+  if (touches.length == 0) {
+    drawBall();
+  } else if (touches.length == 1) {
+    vx = 0;
+    vy = 0;
+  }
+}
 
-  vx += rotationY / 400;
-  vy += rotationX / 400;
+function drawBall() {
+  circle(x, y, diam); //circle movement
+
+  vx += round(rotationY) / 400;
+  vy += round(rotationX) / 400;
 
   x += vx;
   y += vy;
 
+  //circle constrain
   if (x < diam / 2) {
     x = diam / 2;
     vx = 0;
@@ -43,9 +54,12 @@ function draw() {
   text("rX: " + round(rotationX), 0, 50);
   text("rY: " + round(rotationY), 0, 60);
 
-  text("X: " + x, 0, 80);
-  text("Y: " + y, 0, 90);
+  text("X: " + round(x), 0, 80);
+  text("Y: " + round(y), 0, 90);
 
   text("width: " + width, 0, 110);
   text("height: " + height, 0, 120);
+
+  text("vX: " + vx, 0, 140);
+  text("vY: " + vy, 0, 150);
 }
