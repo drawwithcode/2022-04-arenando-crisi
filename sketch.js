@@ -11,6 +11,10 @@ let vsaturation = 0;
 
 let diam = 10;
 
+let disegno = [];
+
+let index;
+
 function setup() {
   createCanvas(windowWidth, windowHeight);
   //textSize(10);
@@ -22,25 +26,42 @@ function setup() {
   saturation = width / 2;
 
   colorMode(HSB, height, width, 100);
+}
 
-  noStroke();
+function touchStarted() {
+  if (touches.length == 1) {
+    disegno.push(new trace());
+  }
+  index = disegno.length;
 }
 
 function draw() {
   background(255);
 
   fill(color, saturation, 100);
+  noStroke();
 
   if (touches.length == 0) {
-    drawBall();
-  } else if (touches.length == 1) {
-    colorChoice();
+    ball();
+    for (let i = 0; i < disegno.length; i++) {
+      disegno[i].show();
+    }
   } else if (touches.length == 2) {
+    colorChoice();
     satChoice();
+  } else if (touches.length == 1) {
+    ball();
+    for (let i = 0; i < disegno.length; i++) {
+      disegno[i].show();
+    }
+  }
+
+  if (mouseIsPressed == true) {
+    disegno[index - 1].record();
   }
 }
 
-function drawBall() {
+function ball() {
   vsaturation = 0;
   vcolor = 0;
 
@@ -83,6 +104,8 @@ function drawBall() {
 }
 
 function colorChoice() {
+  background(255);
+
   vx = 0;
   vy = 0;
 
@@ -118,6 +141,31 @@ function satChoice() {
   }
 
   rect(0, 0, saturation, color);
+}
+
+class trace {
+  constructor() {
+    this.color = color;
+    this.saturation = saturation;
+    this.draw = [];
+    this.vec;
+  }
+
+  record() {
+    this.vec = createVector(x, y);
+    this.draw.push(this.vec);
+  }
+
+  show() {
+    noFill();
+    stroke(this.color, this.saturation, 100);
+
+    beginShape();
+    for (let i = 0; i < this.draw.length; i++) {
+      vertex(this.draw[i].x, this.draw[i].y);
+    }
+    endShape();
+  }
 }
 
 // ask for permissions on iOS
