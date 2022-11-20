@@ -1,71 +1,61 @@
+let btn;
 let x = 0;
 let y = 0;
 let vx = 0;
 let vy = 0;
 
-let color = 0;
-let vcolor = 0;
-
-let saturation = 0;
-let vsaturation = 0;
-
-let diam = 10;
-
-let disegno = [];
-
-let index;
+let text1;
+let text2;
+let text3;
+let text4;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  //textSize(10);
 
-  x = width / 2;
-  y = height / 2;
+  btn = createButton("Click me to draw");
+  btn.style("background-color: #009CF5");
+  btn.style("color: white");
+  btn.style("border-radius: 20px");
+  btn.style("font-family: 'Rubik Bubbles', cursive");
+  btn.style("font-size: 20px");
+  btn.style("width: 200px");
+  btn.style("height: 40px");
+  btn.mousePressed(changePage);
 
-  color = height / 2;
-  saturation = width / 2;
+  text1 = createP("Hello!!");
+  text1.style("font-family: 'Rubik Bubbles', cursive");
+  text1.style("font-size: 20px");
+  text1.position(10, 10);
 
-  colorMode(HSB, height, width, 100);
-}
+  text2 = createP(
+    "tilt your phone to move the cursor, press a finger to start drawing, release it to stop, make practice with the button in this page"
+  );
+  text2.style("font-family: 'Rubik Bubbles', cursive");
+  text2.style("font-size: 15px");
+  text2.position(10, 50);
 
-function touchStarted() {
-  if (touches.length == 1) {
-    disegno.push(new trace());
-  }
-  index = disegno.length;
+  text3 = createP(
+    "if you want to change color, press two fingers and tilt to search the best color"
+  );
+  text3.style("font-family: 'Rubik Bubbles', cursive");
+  text3.style("font-size: 15px");
+  text3.position(10, 110);
+
+  text4 = createP(
+    "now, shake the phone or click the button to start drawing !!"
+  );
+  text4.style("font-family: 'Rubik Bubbles', cursive");
+  text4.style("font-size: 15px");
+  text4.position(10, 150);
+
+  x = width / 2 - 100;
+  y = height / 2 - 20;
+
+  setShakeThreshold(40);
 }
 
 function draw() {
-  background(255);
-
-  fill(color, saturation, 100);
-  noStroke();
-
-  if (touches.length == 0) {
-    ball();
-    for (let i = 0; i < disegno.length; i++) {
-      disegno[i].show();
-    }
-  } else if (touches.length == 2) {
-    colorChoice();
-    satChoice();
-  } else if (touches.length == 1) {
-    ball();
-    for (let i = 0; i < disegno.length; i++) {
-      disegno[i].show();
-    }
-  }
-
-  if (mouseIsPressed == true) {
-    disegno[index - 1].record();
-  }
-}
-
-function ball() {
-  vsaturation = 0;
-  vcolor = 0;
-
-  circle(x, y, diam); //circle movement
+  background("#F5BF6A");
 
   vx += round(rotationY) / 400;
   vy += round(rotationX) / 400;
@@ -73,99 +63,31 @@ function ball() {
   x += vx;
   y += vy;
 
-  //circle constrain
-  if (x < diam / 2) {
-    x = diam / 2;
+  if (x < 0) {
+    x = 0;
     vx = 0;
-  } else if (x > width - diam / 2) {
-    x = width - diam / 2;
+  } else if (x > width - 200) {
+    x = width - 200;
     vx = 0;
   }
 
-  if (y < diam / 2) {
-    y = diam / 2;
+  if (y < 0) {
+    y = 0;
     vy = 0;
-  } else if (y > height - diam / 2) {
-    y = height - diam / 2;
+  } else if (y > height - 40) {
+    y = height - 40;
     vy = 0;
   }
 
-  /*text("rX: " + round(rotationX), 0, 50);
-  text("rY: " + round(rotationY), 0, 60);
-
-  text("X: " + round(x), 0, 80);
-  text("Y: " + round(y), 0, 90);
-
-  text("width: " + width, 0, 110);
-  text("height: " + height, 0, 120);
-
-  text("vX: " + vx, 0, 140);
-  text("vY: " + vy, 0, 150);*/
+  btn.position(x, y);
 }
 
-function colorChoice() {
-  background(255);
-
-  vx = 0;
-  vy = 0;
-
-  vcolor += round(rotationX) / 400;
-
-  color += vcolor;
-
-  if (color < diam / 2) {
-    color = diam / 2;
-    vcolor = 0;
-  } else if (color > height - diam / 2) {
-    color = height - diam / 2;
-    vcolor = 0;
-  }
-
-  rect(0, 0, saturation, color);
+function deviceShaken() {
+  changePage();
 }
 
-function satChoice() {
-  vx = 0;
-  vy = 0;
-
-  vsaturation += round(rotationY) / 400;
-
-  saturation += vsaturation;
-
-  if (saturation < diam / 2) {
-    saturation = diam / 2;
-    vsaturation = 0;
-  } else if (saturation > width - diam / 2) {
-    saturation = width - diam / 2;
-    vsaturation = 0;
-  }
-
-  rect(0, 0, saturation, color);
-}
-
-class trace {
-  constructor() {
-    this.color = color;
-    this.saturation = saturation;
-    this.draw = [];
-    this.vec;
-  }
-
-  record() {
-    this.vec = createVector(x, y);
-    this.draw.push(this.vec);
-  }
-
-  show() {
-    noFill();
-    stroke(this.color, this.saturation, 100);
-
-    beginShape();
-    for (let i = 0; i < this.draw.length; i++) {
-      vertex(this.draw[i].x, this.draw[i].y);
-    }
-    endShape();
-  }
+function changePage() {
+  window.open("index2.html", "_self");
 }
 
 // ask for permissions on iOS
