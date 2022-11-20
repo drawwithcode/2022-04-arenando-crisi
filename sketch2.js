@@ -15,8 +15,12 @@ let disegno = [];
 
 let index;
 
+let cnv;
+
+let btn;
+
 function setup() {
-  createCanvas(windowWidth, windowHeight);
+  cnv = createCanvas(windowWidth, windowHeight);
   //textSize(10);
 
   x = width / 2;
@@ -27,6 +31,16 @@ function setup() {
 
   colorMode(HSB, height, width, 100);
   strokeWeight(5);
+
+  btn = createButton("save");
+  btn.style("background-color: #F5BF6A");
+  btn.style("color: grey");
+  btn.style("border-radius: 20px");
+  btn.style("font-family: 'Rubik Bubbles', cursive");
+  btn.style("font-size: 20px");
+  btn.position(width - 100, height - 50);
+  btn.mousePressed(save);
+  btn.style("user-select: none");
 }
 
 function touchStarted() {
@@ -167,6 +181,10 @@ class trace {
     }
     endShape();
   }
+}
+
+function save() {
+  saveCanvas(cnv, "myCanvas", "jpg");
 }
 
 // ask for permissions on iOS
