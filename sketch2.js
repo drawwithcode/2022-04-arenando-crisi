@@ -19,9 +19,25 @@ let cnv;
 
 let btn;
 
+let pen;
+let pencil;
+let marker;
+
+let toolselect;
+
+let name = localStorage.getItem("name");
+
+function preload() {
+  pen = loadImage("penna.png");
+  pencil = loadImage("matita.png");
+  marker = loadImage("pennarello.png");
+}
+
 function setup() {
   cnv = createCanvas(windowWidth, windowHeight);
   //textSize(10);
+
+  imageMode(CORNER);
 
   x = width / 2;
   y = height / 2;
@@ -41,6 +57,12 @@ function setup() {
   btn.position(width - 100, height - 50);
   btn.mousePressed(save);
   btn.style("user-select: none");
+
+  text1 = createP(name + "'s fantastic drawing");
+  text1.style("font-family: 'Rubik Bubbles', cursive");
+  text1.style("font-size: 20px");
+  text1.position(10, 10);
+  text1.style("user-select: none");
 }
 
 function touchStarted() {
@@ -48,27 +70,31 @@ function touchStarted() {
     disegno.push(new trace());
   }
   index = disegno.length;
+  if (touches.length == 2) {
+    toolselect = random(1, 3);
+  }
 }
 
 function draw() {
+  text1.show();
+  strokeWeight(5);
   clear();
 
   fill(color, saturation, 100);
   noStroke();
 
   if (touches.length == 0) {
-    ball();
     for (let i = 0; i < disegno.length; i++) {
       disegno[i].show();
     }
+    ball();
   } else if (touches.length == 2) {
     colorChoice();
-    satChoice();
   } else if (touches.length == 1) {
-    ball();
     for (let i = 0; i < disegno.length; i++) {
       disegno[i].show();
     }
+    ball();
   }
 
   if (mouseIsPressed == true) {
@@ -80,7 +106,13 @@ function ball() {
   vsaturation = 0;
   vcolor = 0;
 
-  circle(x, y, diam); //circle movement
+  if (round(toolselect) == 1) {
+    image(pen, x, y - 300, 220, 300);
+  } else if (round(toolselect) == 2) {
+    image(pencil, x, y - 300, 190, 300);
+  } else {
+    image(marker, x, y - 300, 190, 300);
+  }
 
   vx += round(rotationY) / 400;
   vy += round(rotationX) / 400;
@@ -119,7 +151,7 @@ function ball() {
 }
 
 function colorChoice() {
-  background(255);
+  text1.hide();
 
   vx = 0;
   vy = 0;
@@ -136,13 +168,6 @@ function colorChoice() {
     vcolor = 0;
   }
 
-  rect(0, 0, saturation, color);
-}
-
-function satChoice() {
-  vx = 0;
-  vy = 0;
-
   vsaturation += round(rotationY) / 400;
 
   saturation += vsaturation;
@@ -155,7 +180,17 @@ function satChoice() {
     vsaturation = 0;
   }
 
-  rect(0, 0, saturation, color);
+  stroke(saturation);
+  strokeWeight(1);
+
+  circle(saturation, color, 80);
+  if (round(toolselect) == 1) {
+    image(pen, saturation, color - 300, 220, 300);
+  } else if (round(toolselect) == 2) {
+    image(pencil, saturation, color - 300, 190, 300);
+  } else {
+    image(marker, saturation, color - 300, 190, 300);
+  }
 }
 
 class trace {

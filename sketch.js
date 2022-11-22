@@ -9,6 +9,15 @@ let text2;
 let text3;
 let text4;
 
+let input;
+
+let x1 = 0;
+let y1 = 0;
+let vx1 = 0;
+let vy1 = 0;
+
+let name;
+
 function setup() {
   createCanvas(windowWidth, windowHeight);
 
@@ -42,7 +51,7 @@ function setup() {
   text3.position(10, 110);
 
   text4 = createP(
-    "now, shake the phone or click the button to start drawing !!"
+    "now, type your name in the box and shake the phone or click the button to start drawing !!"
   );
   text4.style("font-family: 'Rubik Bubbles', cursive");
   text4.style("font-size: 15px");
@@ -52,6 +61,8 @@ function setup() {
   y = height / 2 - 20;
 
   setShakeThreshold(40);
+
+  input = createInput();
 }
 
 function draw() {
@@ -80,6 +91,31 @@ function draw() {
   }
 
   btn.position(x, y);
+
+  vx1 += round(rotationY) / 300;
+  vy1 += round(rotationX) / 300;
+
+  x1 += vx1;
+  y1 += vy1;
+
+  if (x1 < 0) {
+    x1 = 0;
+    vx1 = 0;
+  } else if (x1 > width - 200) {
+    x1 = width - 200;
+    vx1 = 0;
+  }
+
+  if (y1 < 0) {
+    y1 = 0;
+    vy1 = 0;
+  } else if (y1 > height - 40) {
+    y1 = height - 40;
+    vy1 = 0;
+  }
+
+  input.position(x1, y1);
+  name = input.value();
 }
 
 function deviceShaken() {
@@ -88,6 +124,7 @@ function deviceShaken() {
 
 function changePage() {
   window.open("index2.html", "_self");
+  localStorage.setItem("name", name);
 }
 
 // ask for permissions on iOS

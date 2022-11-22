@@ -1,8 +1,13 @@
-html, body {
+html,
+body {
+  user-select: none;
+  min-height: 100%;
+  overflow: hidden;
+  touch-action: pan-y;
   margin: 0;
   padding: 0;
 }
 
-canvas {
-  display: block;
+body {
+  position: relative;
 }
